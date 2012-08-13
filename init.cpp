@@ -28,6 +28,8 @@
 #define _BLOOMSIZE_ 256
 #define DEFAULT_X 1024
 #define DEFAULT_Y 768
+#define DEFAULT_VSYNC false
+#define DEFAULT_QUALITY true
 
 
 
@@ -49,6 +51,7 @@ int gWindowY;
 int gWindowX;
 bool gFullscreen;
 bool gVsync;
+bool gQuality;
 char gDriver;
 
 video::SColor colors[] =
@@ -84,7 +87,7 @@ video::SColor colors2[] =
 //function to generate a new config file
 //simply deletes old file and creates a new one
 //BEGIN FUNC
-void CInit::createNewVideoConfig(int x, int y, bool windowed, bool vsync)
+void CInit::createNewVideoConfig(int x, int y, bool windowed, bool vsync, bool quality)
 {
 	//check that there isnt already a file there
 	//so we can overwrite
@@ -114,8 +117,12 @@ void CInit::createNewVideoConfig(int x, int y, bool windowed, bool vsync)
 		newfile<<"Fullscreen=0;"<<endl;
 	if(vsync==true)
 		newfile<<"Vsync=1;"<<endl;
-	else
+	else 
 		newfile<<"Vsync=0;"<<endl;
+	if(quality==true)
+		newfile << "Quality=1"<<endl;
+	else
+		newfile << "Quality=0"<<endl;
 	newfile.close();
 
 
@@ -210,13 +217,25 @@ void CInit::readVideoConfig()
 					gVsync = std::atoi(v);
 					vfile.erase(sync_pos,newline_sync_pos);
 				}
+
+				//GRAPHICS QUAL
+				size_t qual_pos = vfile.find("Quality=");
+				size_t newline_qual_pos = vfile.find(";");
+				if(newline_qual_pos > qual_pos)
+				{
+					int qsize = newline_qual_pos - qual_pos;
+					char *q = new char[qsize];
+					vfile.copy(q,qsize, int(qual_pos)+8);
+					gQuality = std::atoi(q);
+					vfile.erase(qual_pos,newline_qual_pos);
+				}
 			}
 		}
 	}
 	else
 	{
 		//just use default settings if no video.ini exists
-		createNewVideoConfig(1024,768,true,false);
+		createNewVideoConfig(1024,768,true,false,true);
 	}
 
 }
@@ -271,7 +290,6 @@ void CInit::StartMenu()
 
 	music = sound->play2D("res/sounds/music/ambient1.mp3",true,false,true);
 	music->drop();
-
 
 
 	//create the textures used by the render pipeline bloom
@@ -340,27 +358,29 @@ void CInit::StartMenu()
 		//update init file changes
 		if(option->getApplyButton()->isPressed())
 		{
-			createNewVideoConfig(option->getResolutionX(),option->getResolutionY(),option->getWindowed(),false);
+			createNewVideoConfig(option->getResolutionX(),option->getResolutionY(),option->getWindowed(),false,option->getHighQuality());
 		}
 
-
-		graphics->getVideoDriver()->setRenderTarget(mainTarget,true,true,video::SColor(255,128,160,160));
+		if(gQuality==true)
+			graphics->getVideoDriver()->setRenderTarget(mainTarget,true,true,video::SColor(255,128,160,160));
 		graphics->getSceneManager()->drawAll();
 
+		if(gQuality==true)
+		{
+			graphics->getVideoDriver()->setRenderTarget(rtt0,true,true,video::SColor(0,0,0,0));
+			graphics->getVideoDriver()->draw2DImage(mainTarget,core::rect<s32>(0,0,_BLOOMSIZE_,_BLOOMSIZE_),core::rect<s32>(0,0,gWindowX,gWindowY),
+				0,colors
+				);
 
-		graphics->getVideoDriver()->setRenderTarget(rtt0,true,true,video::SColor(0,0,0,0));
-		graphics->getVideoDriver()->draw2DImage(mainTarget,core::rect<s32>(0,0,_BLOOMSIZE_,_BLOOMSIZE_),core::rect<s32>(0,0,gWindowX,gWindowY),
-			0,colors
-			);
 
+			graphics->getVideoDriver()->setRenderTarget(overlay,true,true);
+			screenQuad->render();
 
-		graphics->getVideoDriver()->setRenderTarget(overlay,true,true);
-		screenQuad->render();
-
-		graphics->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER,true,true);		
-		graphics->getVideoDriver()->draw2DImage(overlay,core::rect<s32>(0,0,gWindowX,gWindowY),core::rect<s32>(0,0,gWindowX,gWindowY),
-			0,colors1
-			);
+			graphics->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER,true,true);		
+			graphics->getVideoDriver()->draw2DImage(overlay,core::rect<s32>(0,0,gWindowX,gWindowY),core::rect<s32>(0,0,gWindowX,gWindowY),
+				0,colors1
+				);
+		}
 
 
 			
@@ -413,7 +433,7 @@ void CInit::StartMenu()
 	if(start==true)
 	{
 		graphics->getGUIEnvironment()->setFocus(0);
-		Game = new GameLoop(graphics,receiver, sound, load);
+		Game = new GameLoop(graphics,receiver, sound, load, gQuality);
 
 		StartGame();
 	}
@@ -461,21 +481,26 @@ void CInit::StartGame()
 			//main graphics loop
 			graphics->getVideoDriver()->beginScene(true, true, video::SColor(255,100,100,140));
 			//fake bloom
-			graphics->getVideoDriver()->setRenderTarget(mainTarget,true,true,video::SColor(255,128,160,160));
+			if(gQuality==true)
+				graphics->getVideoDriver()->setRenderTarget(mainTarget,true,true,video::SColor(255,128,160,160));
 			graphics->getSceneManager()->drawAll();
-			graphics->getVideoDriver()->setRenderTarget(rtt0,true,true,video::SColor(0,0,0,0));
-			graphics->getVideoDriver()->draw2DImage(mainTarget,core::rect<s32>(0,0,_BLOOMSIZE_,_BLOOMSIZE_),core::rect<s32>(0,0,gWindowX,gWindowY),
-				0,colors
-				);
+
+			if(gQuality==true)
+			{
+				graphics->getVideoDriver()->setRenderTarget(rtt0,true,true,video::SColor(0,0,0,0));
+				graphics->getVideoDriver()->draw2DImage(mainTarget,core::rect<s32>(0,0,_BLOOMSIZE_,_BLOOMSIZE_),core::rect<s32>(0,0,gWindowX,gWindowY),
+					0,colors
+					);
 
 
-			graphics->getVideoDriver()->setRenderTarget(overlay,true,true);
-			screenQuad->render();
+				graphics->getVideoDriver()->setRenderTarget(overlay,true,true);
+				screenQuad->render();
 
-			graphics->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER,true,true);		
-			graphics->getVideoDriver()->draw2DImage(overlay,core::rect<s32>(0,0,gWindowX,gWindowY),core::rect<s32>(0,0,gWindowX,gWindowY),
-				0,colors1
-				);
+				graphics->getVideoDriver()->setRenderTarget(video::ERT_FRAME_BUFFER,true,true);		
+				graphics->getVideoDriver()->draw2DImage(overlay,core::rect<s32>(0,0,gWindowX,gWindowY),core::rect<s32>(0,0,gWindowX,gWindowY),
+					0,colors1
+					);
+			}
 
 
 			graphics->getGUIEnvironment()->drawAll();

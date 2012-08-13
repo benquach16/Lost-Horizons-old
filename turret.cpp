@@ -35,7 +35,7 @@ turret::turret(irr::IrrlichtDevice *graphics,int turret_number,scene::IBoneScene
 	this->t_class = t_class;
 	this->turret_number = turret_number;
 	this->icon = graphics->getVideoDriver()->getTexture(t_class->icon);
-	t_model = graphics->getSceneManager()->addAnimatedMeshSceneNode(graphics->getSceneManager()->getMesh(t_class->model));
+	t_model = graphics->getSceneManager()->addAnimatedMeshSceneNode(graphics->getSceneManager()->getMesh(t_class->model),0,-1,vector3df(0,0,0),vector3df(0,0,0),vector3df(1,1,1),true);
 	t_model->setScale(t_class->scale);
 	this->rotate_speed = t_class->rotation_speed;
 	this->reload_time = t_class->reload_time;
@@ -47,6 +47,18 @@ turret::~turret()
 	//make sure to kill the model aswell
 	t_model->setVisible(false);
 	t_model->remove();
+}
+
+//change turret class
+void turret::setTurret(turret_base *newclass)
+{
+	t_class = newclass;
+	//t_model->remove();
+	//t_model = graphics->getSceneManager()->addAnimatedMeshSceneNode(graphics->getSceneManager()->getMesh(t_class->model));
+	t_model->setScale(newclass->scale);
+	this->rotate_speed = newclass->rotation_speed;
+	this->reload_time = newclass->reload_time;
+
 }
 
 void turret::aimTurret(core::vector3df& newrot, f32 frameDeltaTime)

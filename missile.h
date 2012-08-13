@@ -18,40 +18,67 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+
+//missile.h
+//code for guided missiles and torpedos
+
+#ifndef _MISSILE_H_
+#define _MISSILE_H_
 
 #pragma once
 
 #include "irrlicht.h"
 #include "object.h"
-#include "item.h"
-
-#include "vector"
 
 using namespace irr;
 using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class missile
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
+	missile(irr::IrrlichtDevice *graphics = 0, core::vector3df &pos = core::vector3df(0,0,0),
+		vector3df &rot = vector3df(0,0,0), irr::scene::IAnimatedMeshSceneNode *ship = 0);
+
 	void loop(f32 frameDeltaTime);
+	int checkRange();
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
-
+	int getDamage();
+	scene::IAnimatedMeshSceneNode *getTarget()
+	{
+		return target;
+	}
+	vector3df getPos()
+	{
+		return projectile->getPosition();
+	}
+	int getRange()
+	{
+		return range;
+	}
+	int getHealth()
+	{
+		return health;
+	}
+	void damage(int damage)
+	{
+		health -= damage;
+	}
+	int getDistFromTarget();
+	~missile();
 private:
-	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
 	vector3df pos;
+	vector3df rot;
+
+	irr::IrrlichtDevice *graphics;
+	scene::IAnimatedMeshSceneNode *target;
+	scene::IAnimatedMeshSceneNode *projectile;
+
+	//stats
+	int base_damage;
+	int min_damage;
+	int velocity;
+	int range;
+
+	int health;
 };
 
 #endif

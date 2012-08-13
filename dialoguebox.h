@@ -18,40 +18,54 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
+#ifndef _DIALOGUEBOX_H_
+#define _DIALOGUEBOX_H_
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
 
 using namespace irr;
 using namespace core;
-using namespace video;
+using namespace scene;
+using namespace gui;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class CDialogueBox 
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	CDialogueBox(irr::IrrlichtDevice *graphics, const wchar_t *speaker_name, const wchar_t *text);
+	~CDialogueBox();
+	void loop();
+	void changeText(const wchar_t *text);
+	void changeSpeaker(const wchar_t *text);
+	gui::IGUIButton *getOKButton()
+	{
+		return ok;
+	}
+	gui::IGUIButton *getYesButton()
+	{
+		return yes;
+	}
+	gui::IGUIButton *getNoButton()
+	{
+		return no;
+	}
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
 
 private:
 	irr::IrrlichtDevice *graphics;
+	gui::IGUIWindow *window;
+	gui::IGUIStaticText *speaker;
+	gui::IGUIStaticText *main;
+	gui::IGUIButton	*ok;
+	gui::IGUIButton *yes;
+	gui::IGUIButton *no;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	core::dimension2d<u32> screen_size;
+	rect<s32> window_size;
+
+	const wchar_t *speaker_name;
+	const wchar_t *text;
+
 };
+
 
 #endif

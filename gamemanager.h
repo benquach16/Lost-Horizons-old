@@ -46,6 +46,7 @@
 #include "cargo.h"
 #include "vector"
 #include "stack"
+#include "shadercallback.h"
 #include "string"
 #include "sTypes.h"
 #include "fighter.h"
@@ -86,7 +87,7 @@ public:
 	gameManager(irr::IrrlichtDevice *graphics, KeyListener* receiver, irrklang::ISoundEngine *sound);
 	~gameManager();
 	void drop();
-	void gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound, Player* CPlayer, CAlertBox *alertBox);
+	void gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound, Player* CPlayer, CAlertBox *alertBox, ShaderCallBack *callback);
 	
 	//add a projectile to the projectile vector
 	void addProjectile(projectile* shot);
@@ -101,7 +102,7 @@ public:
 	void addStation(CShip* station);
 	void addPlanet(planet* p);
 	//station management loop
-	void stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound,CShip *station);
+	void stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound,CShip *station, ShaderCallBack *callback);
 
 	//loop to update projectiles
 	void projectileAnimationManager(f32 frameDeltaTime, irrklang::ISoundEngine *sound, Player *CPlayer);
@@ -153,7 +154,7 @@ public:
 	stringw floatToString(float num);
 	stringw intToString(int num);
 	void saveObjects(io::IXMLWriter *writer);
-	void loadShips(io::IXMLReader *reader, int numobjects);
+	void loadShips(io::IXMLReader *reader, int numobjects, ShaderCallBack *callback);
 	void loadFighters(io::IXMLReader *reader, int numobjects);
 	void loadCargo(io::IXMLReader *reader, int numobjects);
 

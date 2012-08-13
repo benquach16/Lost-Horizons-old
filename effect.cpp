@@ -18,40 +18,35 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#include "stdafx.h"
+#include "effect.h"
 
-#pragma once
-
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+//Most of these functions are to be replaced by the actual effect functions
+//Just sets up the framework
+CEffect::CEffect(irr::IrrlichtDevice *graphics ,irrklang::ISoundEngine *sound , core::vector3df& pos)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	//End should always start out as false
+	setEnd(false);
+}
+CEffect::~CEffect()
+{
+}
 
-private:
-	irr::IrrlichtDevice *graphics;
+//Since end is a private variable
+void CEffect::setEnd(bool value)
+{
+	end = value;
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
+void CEffect::loop()
+{
+}
 
-#endif
+bool CEffect::getEnd()
+{
+	return end;
+}
+
+void CEffect::drop()
+{
+}

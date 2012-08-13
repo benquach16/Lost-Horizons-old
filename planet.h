@@ -18,40 +18,55 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
+#ifndef _PLANET_H_
+#define _PLANET_H_
 
 #include "irrlicht.h"
+#include "sTypes.h"
 #include "object.h"
-#include "item.h"
-
-#include "vector"
+#include "shadercallback.h"
 
 using namespace irr;
+using namespace scene;
 using namespace core;
-using namespace video;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class planet : public CObject
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	
+	scene::IAnimatedMeshSceneNode *model;
+	scene::ISceneNode *cloud;
+	scene::ISceneNode *corona;
+
+	//constructor
+	planet(irr::IrrlichtDevice *graphics, planet_base *planet_type, core::vector3df& position, ship_faction faction, const wchar_t *name, core::stringc texture);
+	//give the planets some animation
+	void rotate(f32 frameDeltaTime);
+	void planetCapture();
+	int getFactionRelation();
+	void setFactionRelation(int newrelation);
+	ship_faction getFaction();
+	void setFaction(ship_faction faction);
+	vector2d<int> getArrayPos();
+	void setArrayVisible(bool visible);
+	core::vector3df getPos();
+	planet_base *getPlanetType();
+	void setCloudsVisible(bool visible);
+
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	~planet(); //supernova
 
 private:
-	irr::IrrlichtDevice *graphics;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	ship_faction faction;
+	planet_base *planet_type;
+	irr::IrrlichtDevice *graphics;
+	int factionRelations;
+	core::vector2d<int> array_pos;
+	gui::IGUIImage *target_array;
+
 };
+
+
 
 #endif

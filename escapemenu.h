@@ -18,40 +18,52 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
+#ifndef _ESCAPEMENU_H_
+#define _ESCAPEMENU_H_
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
 
 using namespace irr;
 using namespace core;
+using namespace scene;
 using namespace video;
+using namespace gui;
+using namespace io;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+
+//Escape menu class
+//pops up when player hits escape
+//Is always existing during the game but is invisible unless needed
+class CEscapeMenu
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	//constructor, called once
+	CEscapeMenu(irr::IrrlichtDevice *graphics);
+	~CEscapeMenu();
+
+	//used only if the thing is visible
+	void run();
+
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+
+	//used to show/hide the escape menu
+	void setVisible(bool isvisible);
+	bool getVisible();
+
+
+	//used in order to check if the buttons got pressed
+	bool getSaveButtonPressed();
+	bool getQuitButtonPressed();
 
 private:
 	irr::IrrlichtDevice *graphics;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	bool visibility;
+
+	gui::IGUIWindow *escape_window;
+	gui::IGUIButton *save_button;
+	gui::IGUIButton *quit_button;
 };
+
 
 #endif

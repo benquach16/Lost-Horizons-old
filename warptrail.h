@@ -18,40 +18,29 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#ifndef _WARPTRAIL_H_
+#define _WARPTRAIL_H_
 
 #pragma once
-
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
+#include "irrklang.h"
+#include "effect.h"
 
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class warptrail : public CEffect
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	warptrail(irr::IrrlichtDevice *graphics,irrklang::ISoundEngine *sound, vector3df &pos, vector3df &rot);
+	void loop(vector3df &pos);
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	~warptrail();
 
 private:
 	irr::IrrlichtDevice *graphics;
+	irrklang::ISoundEngine *sound;
+	scene::IMeshSceneNode *model;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
 	vector3df pos;
+	vector3df rot;
 };
 
 #endif

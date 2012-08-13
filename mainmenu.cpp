@@ -37,7 +37,7 @@ CMainMenu::CMainMenu(irr::IrrlichtDevice *graphics,irrklang::ISoundEngine *sound
 	for (s32 i=0; i<gui::EGDC_COUNT ; i++)
 	{
 		video::SColor col = graphics->getGUIEnvironment()->getSkin()->getColor((gui::EGUI_DEFAULT_COLOR)i);
-		col.setAlpha(128);
+		col.setAlpha(208);
 		col.setBlue(128);
 		col.setGreen(118);
 		col.setRed(108);

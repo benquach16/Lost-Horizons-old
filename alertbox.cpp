@@ -39,26 +39,11 @@ void CAlertBox::run()
 {
 	//loops through annoucements
 	//then displays them
-	for(u32 i=0;i<text.size();i++)
+	for(int i=0;i<text.size();i++)
 	{
 		text[i]->setVisible(true);
 		float difference = (graphics->getTimer()->getTime() +time_start)/1000;
 		text[i]->setOverrideColor(video::SColor(alpha[i],255,255,255));
-		if(difference >= 5/1000)
-		{
-
-			if(alpha[i]>0)
-				alpha[i]--;
-			time_start = graphics->getTimer()->getTime();
-			
-		}
-		if(alpha[i]<5)
-		{
-			text[i]->setVisible(false);
-			text[i]->remove();
-			text.erase(text.begin()+i);
-			alpha.erase(alpha.begin()+i);
-		}
 
 		//need a better way to move text up
 		if(text.size()>1)
@@ -68,6 +53,25 @@ void CAlertBox::run()
 			int tmp = i*25;
 			text[i]->setRelativePosition(position2di(0,tmp));
 		}
+
+		if(difference >= 5/1000)
+		{
+
+			if(alpha[i]>0)
+				alpha[i]--;
+			time_start = graphics->getTimer()->getTime();
+			
+		}
+
+		if(alpha[i]<5)
+		{
+			text[i]->setVisible(false);
+			text[i]->remove();
+			text.erase(text.begin()+i);
+			alpha.erase(alpha.begin()+i);
+		}
+
+
 	}
 }
 

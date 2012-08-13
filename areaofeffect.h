@@ -18,39 +18,55 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
 
-#pragma once
+//areaofeffect.h
+//basically an object that damages all ships around it
+//area of effect
+//mostly just a placeholder
+//since its managed by gamemanger
+
+#ifndef _AREAOFEFFECT_H_
+#define _AREAOFEFFECT_H_
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
 
 using namespace irr;
 using namespace core;
-using namespace video;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class areaofeffect
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	areaofeffect(irr::IrrlichtDevice *graphics, vector3df &pos, int radius, int maxdamage, int mindamage);
+	~areaofeffect();
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	int getRadius()
+	{
+		return radius;
+	}
+	int getMaxDamage()
+	{
+		return maxdamage;
+	}
+	int getMinDamage()
+	{
+		return mindamage;
+	}
+	int getTime()
+	{
+		return time;
+	}
+	vector3df getPos()
+	{
+		return pos;
+	}
 
 private:
-	irr::IrrlichtDevice *graphics;
+	int radius;
+	int maxdamage;
+	int mindamage;
+	int time;	//only lives for a limited amount of time
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
+	irr::IrrlichtDevice *graphics;
 	vector3df pos;
 };
 

@@ -18,40 +18,23 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#include "stdafx.h"
+#include "areaofeffect.h"
 
-#pragma once
+#define AOE_TIME 500
 
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+areaofeffect::areaofeffect(irr::IrrlichtDevice *graphics, vector3df &pos, int radius, int maxdamage, int mindamage):
+graphics(graphics), pos(pos), radius(radius), maxdamage(maxdamage), mindamage(mindamage)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	//initialize variables
+	this->time			=		graphics->getTimer()->getTime()+AOE_TIME;	
+}
 
-private:
-	irr::IrrlichtDevice *graphics;
+areaofeffect::~areaofeffect()
+{
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
-
-#endif
+void areaofeffect::drop()
+{
+	delete this;
+}

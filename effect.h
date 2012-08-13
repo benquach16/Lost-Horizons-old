@@ -18,40 +18,37 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+//effect.h
+//base class
+//used to make effects easy to animate and manage
+
+#ifndef _EFFECT_H_
+#define _EFFECT_H_
 
 #pragma once
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
+#include "irrklang.h"
 
 using namespace irr;
 using namespace core;
-using namespace video;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class CEffect
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	//Initializer
+	//Most functions will be replaced by the actual effect functions
+	CEffect(irr::IrrlichtDevice *graphics = 0,irrklang::ISoundEngine *sound = 0, core::vector3df& pos = vector3df(0,0,0));
+	~CEffect();
+	virtual void loop();
+	virtual void drop();
+	bool getEnd();
+
+	void setEnd(bool value);
 
 private:
+	bool end;
 	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
 };
 
 #endif

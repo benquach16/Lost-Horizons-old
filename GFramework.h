@@ -18,40 +18,43 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+//GFramework.h
+#ifndef _GFRAMEWORK_H_
+#define _GFRAMEWORK_H_
 
-#pragma once
 
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
+#define CAMERA_DISTANCE_MAX 3500
+#define CAMERA_DISTANCE_MAX_NAV 2000000
+#define CAMERA_DISTANCE_MIN 100
+#define CAMERA_DISTANCE_MIN_NAV 3500
+#define CAMERA_SPEED 1
+#define CAMERA_MOUSE_WHEEL 50
+#define CAMERA_MOUSE_WHEEL_NAV 1000
+#define CAMERA_HIDE_DISTANCE 60000
+#define CAMERA_VIEW_DISTANCE 2000000
+#define CAMERA_SWAY_TIMER 1000
+#define RADAR_RANGE 10000
+#define SHIP_WARP_SPEED 5000
+#define SHIP_WARP_DISTANCE 30000
+#define SHIP_DOCK_DISTANCE 1000
+#define SHIP_MAX_TURN 70
+#define FIGHTER_CLOSE_RANGE 1000
+#define FIGHTER_FAR_RANGE 10000
+#define FIGHTER_DOCK_RANGE 200
+#define OBJECT_MAX_LIFETIME 3600
+#define ARMOR_TANK_VALUE 1.15
+#define CAMERA_FOV 1.2566
 
-#include "vector"
 
-using namespace irr;
-using namespace core;
-using namespace video;
+//#define true false
+#define PI 3.14151
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
-{
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
 
-private:
-	irr::IrrlichtDevice *graphics;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
+
+
+
 
 #endif
+
+

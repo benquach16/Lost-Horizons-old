@@ -18,40 +18,58 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#ifndef _OBJECTIVE_H_
+#define _OBJECTIVE_H_
 
 #pragma once
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
+#include "player.h"
+#include "ship.h"
 
-#include "vector"
 
 using namespace irr;
 using namespace core;
-using namespace video;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+//Defines what kind of objectives the player can receive
+enum OBJ_TYPES
+{
+	OBJ_GOTO = 0,
+	OBJ_SWEEP = 1,
+	OBJ_DEFEND = 2,
+	OBJ_PATROL = 3,
+	OBJ_GET = 4,
+	OBJ_DOCK = 5,
+};
+
+class CObjective
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	CObjective(const wchar_t *obj_title = L"OBJ_TITLE", OBJ_TYPES type = OBJ_GOTO, vector3df& objective_point = vector3df(0,0,0));
+	~CObjective();
+	bool loop(irr::IrrlichtDevice *graphics, bool display_obj, Player *CPlayer, std::vector<CShip*> ship_manager);
+	void changeTitle(const wchar_t *newtitle)
+	{
+		objective_title = newtitle;
+	}
+	const wchar_t *getTitle()
+	{
+		return objective_title;
+	}
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
 
 private:
-	irr::IrrlichtDevice *graphics;
+	core::vector2d<s32> array_pos;
+	gui::IGUIImage *target_array;
+	scene::ISceneNode *nav_buoy;	//used to tell where the objective is for the player
+	vector3df objective_location;
+	CShip *objective_target;
+	OBJ_TYPES objective_type;
+	const wchar_t *objective_title;
+	bool objective_complete;
+	bool display_objective;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
 };
+
 
 #endif

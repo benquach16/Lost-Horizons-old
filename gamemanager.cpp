@@ -439,7 +439,7 @@ core::vector3df gameManager::aimAtPlayer(Player *CPlayer)
 
 //monster func
 //controls ships
-void gameManager::gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound, Player* CPlayer, CAlertBox *alertBox)
+void gameManager::gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound, Player* CPlayer, CAlertBox *alertBox, ShaderCallBack *callback)
 {
 
 	//AI ship loop
@@ -508,9 +508,13 @@ void gameManager::gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *so
 			//before searching
 			if(ship_manager[i]->getState() == STATE_SEARCH)
 			{
+				//having problems with ships shooting wreckages
+
 				//ship_manager[i]->resetCannons();
 				if(ship_manager[i]->getTarget()==0)
 				{
+					if(pos.getDistanceFrom(CPlayer->getPos())>6000 || ship_manager[i]->getHostileToPlayer()==false)
+						ship_manager[i]->resetCannons();
 					//ship_manager[i]->resetCannons();
 					//search if ship has no current target
 					if(ship_manager[i]->getShipFaction()!=FACTION_NEUTRAL)
@@ -524,6 +528,9 @@ void gameManager::gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *so
 						}
 						
 					}
+
+					//ai roles come into effect here
+					
 				}
 				else
 				{
@@ -734,7 +741,7 @@ void gameManager::gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *so
 			//no real difference other than that
 			if(ship_manager[i]->getIsStation()==true)
 			{
-				stationLoop(frameDeltaTime,sound,ship_manager[i]);
+				stationLoop(frameDeltaTime,sound,ship_manager[i], callback);
 			}
 
 		}
@@ -767,7 +774,7 @@ void gameManager::gameManagerLoop(f32 frameDeltaTime, irrklang::ISoundEngine *so
 //the CSHIP CLASS doubles as a station
 //make sure station definitions dont let stations move though
 //or else that would look really fucking stupid
-void gameManager::stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound, CShip *station)
+void gameManager::stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound, CShip *station, ShaderCallBack *callback)
 {
 
 	if(station->getHullPoints()>0)
@@ -787,6 +794,7 @@ void gameManager::stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound,
 		}
 		else
 		{
+			
 			//if station has a home planet
 			//begin ship production
 			//if(station->getShipClass() == ships().HQ)
@@ -798,7 +806,7 @@ void gameManager::stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound,
 					const wchar_t *pname = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
 					if(station->getShipFaction()==FACTION_PROVIAN_CONSORTIUM)
 					{
-						CShip *newship  = new CShip(graphics,sound,station->getPos(),station->getRot(),ships().PROV_ISHTAR_CRUISER,station->getShipFaction(), pname);
+						CShip *newship  = new CShip(graphics,sound,station->getPos(),station->getRot(),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM, pname, callback);
 						addShip(newship);
 						//six minute timer before creating a anew ship
 						//TODO: change with ship
@@ -807,17 +815,16 @@ void gameManager::stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound,
 					if(station->getShipFaction()==FACTION_TERRAN_FEDERATION)
 					{
 						const wchar_t *tname = ships().terran_ship_name[rand()%ships().terran_ship_name.size()];
-						CShip *newship  = new CShip(graphics,sound,station->getPos(),station->getRot(),ships().TERR_PRAETORIAN_CRUISER,station->getShipFaction(),tname);
+						CShip *newship  = new CShip(graphics,sound,station->getPos(),station->getRot(),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION,tname, callback);
 						addShip(newship);
 						station->setStarshipCreationTime(graphics->getTimer()->getTime() + 360000);
 					}
 				}
-
+				
 
 			//}
 		}
 
-		//station battlefield strategery
 		//if there are ships around launch fighters
 		if(getClosestEnemyShip(station)!=0)
 		{
@@ -848,7 +855,11 @@ void gameManager::stationLoop(f32 frameDeltaTime, irrklang::ISoundEngine *sound,
 					}
 				}
 			}
+
+
 		}
+
+		//if under attack launch distress
 
 	}
 
@@ -880,7 +891,7 @@ void gameManager::fighterManager(f32 frameDeltaTime, irrklang::ISoundEngine *sou
 
 			if(fighter_manager[i]->getFuel()<graphics->getTimer()->getTime())
 				fighter_manager[i]->setReturnHome(true);
-
+			
 
 			if(fighter_manager[i]->getReturnHome()!=true)
 			{
@@ -959,8 +970,16 @@ void gameManager::fighterManager(f32 frameDeltaTime, irrklang::ISoundEngine *sou
 							//missile launch code
 							if(fighter_manager[i]->cannon.missile==true)
 							{
-								missile *m = new missile(graphics,pos,fighter_manager[i]->getRot(),fighter_manager[i]->getTarget()->ship);
-								missile_manager.push_back(m);
+								if(pos.getDistanceFrom(CPlayer->getPos()) < 1000)
+								{
+									missile *m = new missile(graphics,pos,fighter_manager[i]->getRot(),CPlayer->ship);
+									missile_manager.push_back(m);
+								}
+								else
+								{
+									missile *m = new missile(graphics,pos,fighter_manager[i]->getRot(),fighter_manager[i]->getTarget()->ship);
+									missile_manager.push_back(m);
+								}
 							}
 						}
 						else
@@ -974,29 +993,36 @@ void gameManager::fighterManager(f32 frameDeltaTime, irrklang::ISoundEngine *sou
 				{
 					//dogfight
 					fighter_manager[i]->setTarget(0);
-					if(fighter_manager[i]->getFighterTarget()->getHullPoints()>0 && fighter_manager[i]->getFighterTarget()->alive!=false)
+					//huge crashing problem with fighters
+					//its really annoying
+					if(!fighter_manager[i]->getFighterTarget()->fighter_model)
+						fighter_manager[i]->setFighterTarget(0);
+					else
 					{
-						if(pos.getDistanceFrom(fighter_manager[i]->getFighterTarget()->getPos())>500)
+						if(fighter_manager[i]->getFighterTarget()->getHullPoints()>0 && fighter_manager[i]->getFighterTarget()->alive!=false)
 						{
-							fighter_manager[i]->moveToPoint(fighter_manager[i]->getFighterTarget()->getPos());
+							if(pos.getDistanceFrom(fighter_manager[i]->getFighterTarget()->getPos())>500)
+							{
+								fighter_manager[i]->moveToPoint(fighter_manager[i]->getFighterTarget()->getPos());
+							}
+							else
+							{
+								fighter_manager[i]->shoot();
+								fighter_manager[i]->moveAwayFromPoint(fighter_manager[i]->getFighterTarget()->getPos());
+
+							}
+
+							if(fighter_manager[i]->cannon.cannon==true)
+							{
+								//projectile *p = new gatlingBullet(graphics,fighter_manager[i]->getPos(),fighter_manager[i]->getRot(),0);
+								//pd_manager.push_back(p);
+								if(rand()%3<2)
+									fighter_manager[i]->getFighterTarget()->damageFighter(4);
+							}
 						}
 						else
-						{
-							fighter_manager[i]->shoot();
-							fighter_manager[i]->moveAwayFromPoint(fighter_manager[i]->getFighterTarget()->getPos());
-
-						}
-
-						if(fighter_manager[i]->cannon.cannon==true)
-						{
-							//projectile *p = new gatlingBullet(graphics,fighter_manager[i]->getPos(),fighter_manager[i]->getRot(),0);
-							//pd_manager.push_back(p);
-							if(rand()%3<2)
-								fighter_manager[i]->getFighterTarget()->damageFighter(4);
-						}
+							fighter_manager[i]->setFighterTarget(0);
 					}
-					else
-						fighter_manager[i]->setFighterTarget(0);
 
 				}
 
@@ -1017,8 +1043,8 @@ void gameManager::fighterManager(f32 frameDeltaTime, irrklang::ISoundEngine *sou
 						{
 							CPlayer->addFighterCount(1);
 							fighter_manager[i]->alive = false;
-							fighter_manager[i]->drop();
-							fighter_manager.erase(fighter_manager.begin()+i);
+							//fighter_manager[i]->drop();
+							//fighter_manager.erase(fighter_manager.begin()+i);
 						}
 						else
 						{
@@ -1028,8 +1054,8 @@ void gameManager::fighterManager(f32 frameDeltaTime, irrklang::ISoundEngine *sou
 								{
 									ship_manager[n]->modNumFighters(1);
 									fighter_manager[i]->alive = false;
-									fighter_manager[i]->drop();
-									fighter_manager.erase(fighter_manager.begin()+i);							
+									//fighter_manager[i]->drop();
+									//fighter_manager.erase(fighter_manager.begin()+i);							
 
 								}
 							}
@@ -1153,7 +1179,8 @@ void gameManager::projectileAnimationManager(f32 frameDeltaTime,irrklang::ISound
 		}
 	}
 }
-
+//END FUNC
+//-----------------------------------------------------------------------------------------------
 
 
 //for fighters
@@ -1260,7 +1287,7 @@ void gameManager::missileAnimationManager(f32 frameDeltaTime, irrklang::ISoundEn
 		}
 	}
 }
-
+//---------------------------------------------------------------------------------------
 void gameManager::aoeManager(Player *CPlayer)
 {
 	for(unsigned int i=0; i<aoe_manager.size();i++)
@@ -1293,7 +1320,9 @@ void gameManager::aoeManager(Player *CPlayer)
 		aoe_manager.erase(aoe_manager.begin()+i);
 	}
 }
+//--------------------------------------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------------------------------------
 //rotates the cargo
 void gameManager::cargoManager(f32 frameDeltaTime, Player *CPlayer, CAlertBox *alertBox)
 {
@@ -1323,7 +1352,7 @@ void gameManager::cargoManager(f32 frameDeltaTime, Player *CPlayer, CAlertBox *a
 		}
 	}
 }
-
+//-----------------------------------------------------------------------------------------
 
 
 //show planet targetting reticules
@@ -1378,7 +1407,7 @@ void gameManager::effectAnimationManager()
 	}
 }
 
-
+//-----------------------------------------------------------------------------------------------------------
 //function for playershoot
 //called from the gameloop
 //all the shooting management is done in this file because all the other ships are managed in this file
@@ -1408,47 +1437,55 @@ void gameManager::playerShoot(irr::IrrlichtDevice *graphics,Player* CPlayer, irr
 				*/
 			if(rand()%CPlayer->turret_manager[i]->getReloadTime()<SHOOTTIME*frameDeltaTime)
 			{
-				sound->play3D("res/sounds/weapons/rail.wav",CPlayer->turret_manager[i]->getPos(),false,false,false);
-				projectile *p  = new railgunShot(graphics, CPlayer->turret_manager[i]->getFirePos(), CPlayer->turret_manager[i]->getRot(),CPlayer->ship);
-				projectile_manager.push_back(p);
-				
-				muzzleflash *m = new muzzleflash(graphics,sound,CPlayer->turret_manager[i]->getFirePos());
+				if(CPlayer->getPrimaryTurret()->name==items().PRI_RAIL->name)
+				{
+					sound->play3D("res/sounds/weapons/rail.wav",CPlayer->turret_manager[i]->getPos(),false,false,false);
+					projectile *p  = new railgunShot(graphics, CPlayer->turret_manager[i]->getFirePos(), CPlayer->turret_manager[i]->getRot(),CPlayer->ship);
+					projectile_manager.push_back(p);
+				}
+				if(CPlayer->getPrimaryTurret()->name==items().PRI_PHOTON->name)
+				{
+					sound->play3D("res/sounds/weapons/photon.wav",CPlayer->turret_manager[i]->getPos(),false,false,false);
+					projectile *p  = new photonCannonShot(graphics, CPlayer->turret_manager[i]->getFirePos(), CPlayer->turret_manager[i]->getRot(),CPlayer->ship);
+					projectile_manager.push_back(p);
+				}
+				muzzleflash *m = new muzzleflash(graphics,sound,CPlayer->turret_manager[i]->getFirePos(), CPlayer->turret_manager[i]->getRot(), CPlayer->turret_manager[i]->getBone());
 				effect_manager.push_back(m);
 
-				
-			//}
-			}
-		}
-		if(player_target!=0)
-		{
-			if(rand()%50<3)
-			{
-				if(player_target->getShieldPoints()<1)
+				if(player_target!=0)
 				{
-					if(subsys==0)
+					if(rand()%300<3)
 					{
-						player_target->subsystem.engine-=rand()%10;
-					}
-					if(subsys==1)
-					{
-						player_target->subsystem.warpdrive-=rand()%10;
-					}
-					if(subsys==2)
-					{
-						player_target->subsystem.primary_weapons-=rand()%10;
-					}
-					if(subsys==3)
-					{
-						player_target->subsystem.secondary_weapons-=rand()%10;
-					}
-					if(subsys==4)
-					{
-						player_target->subsystem.light_weapons-=rand()%10;
+						if(player_target->getShieldPoints()<1)
+						{
+							if(subsys==0)
+							{
+								player_target->subsystem.engine-=rand()%10;
+							}
+							if(subsys==1)
+							{
+								player_target->subsystem.warpdrive-=rand()%10;
+							}
+							if(subsys==2)
+							{
+								player_target->subsystem.primary_weapons-=rand()%10;
+							}
+							if(subsys==3)
+							{
+								player_target->subsystem.secondary_weapons-=rand()%10;
+							}
+							if(subsys==4)
+							{
+								player_target->subsystem.light_weapons-=rand()%10;
+							}
+						}
 					}
 				}
 			}
+			//}
 		}
 	}
+
 	if(CPlayer->cannonFired.secondary == true)
 	{
 		//Scan through the turrets that the player has
@@ -1468,7 +1505,7 @@ void gameManager::playerShoot(irr::IrrlichtDevice *graphics,Player* CPlayer, irr
 					sound->play3D("res/sounds/weapons/antimatter.wav",CPlayer->secondary_turret_manager[i]->getPos(),false,false,false);
 					projectile *p  = new antiMatterShot(graphics, CPlayer->secondary_turret_manager[i]->getFirePos(), CPlayer->secondary_turret_manager[i]->getRot(),CPlayer->ship);
 					projectile_manager.push_back(p);
-					muzzleflash *m = new muzzleflash(graphics,sound,CPlayer->secondary_turret_manager[i]->getFirePos());
+					muzzleflash *m = new muzzleflash(graphics,sound,CPlayer->secondary_turret_manager[i]->getFirePos(), CPlayer->secondary_turret_manager[i]->getRot(), CPlayer->secondary_turret_manager[i]->getBone());
 					effect_manager.push_back(m);
 
 					//}
@@ -1488,30 +1525,39 @@ void gameManager::playerShoot(irr::IrrlichtDevice *graphics,Player* CPlayer, irr
 				sound->play3D("res/sounds/weapons/gatling.wav",CPlayer->light_turret_manager[i]->getPos(),false,false,false);
 				projectile *p  = new gatlingBullet(graphics, CPlayer->light_turret_manager[i]->getFirePos(), CPlayer->light_turret_manager[i]->getRot(),CPlayer->ship);
 				pd_manager.push_back(p);
-				muzzleflash *m = new muzzleflash(graphics,sound,CPlayer->light_turret_manager[i]->getFirePos());
+				muzzleflash *m = new muzzleflash(graphics,sound,CPlayer->light_turret_manager[i]->getFirePos(), CPlayer->light_turret_manager[i]->getRot(), CPlayer->light_turret_manager[i]->getBone());
 				effect_manager.push_back(m);
 			}
 		}
 	}
 
+	//BUG: point defense turrets never stop shooting
+	int tmp=0;
 	for(unsigned int i=0;i<fighter_manager.size();i++)
 	{
-		if(fighter_manager[i]->getFighterFaction()==FACTION_PROVIAN_CONSORTIUM)
+		if(fighter_manager[i]->getHostileToPlayer()==true)
 		{
 			if(CPlayer->getPos().getDistanceFrom(fighter_manager[i]->getPos())<2000)
 			{
 				CPlayer->aimPd(fighter_manager[i]->getPos(),frameDeltaTime);
 				CPlayer->shootPD();
-
+				tmp+=1;
 			}
-			
+			//else
+				//CPlayer->resetPD();
 		}
 	}
-
+	if(tmp==0)
+		CPlayer->resetPD();
 }
+//end funct
+//-----------------------------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+//destroyObjects()
 //cleaner function
 //call this last in order to make everything way way more clean
+//should no longer have reference errors with this function
 void gameManager::destroyObjects(Player *CPlayer)
 {
 	for(int i=0;i<ship_manager.size();i++)
@@ -1544,6 +1590,7 @@ void gameManager::destroyObjects(Player *CPlayer)
 	}
 
 	// i need this, but i dont know why the hell i put it here
+	//creates explosion on player death
 	if(CPlayer->getHull()<1)
 	{
 		if(playerDead==false)
@@ -1554,9 +1601,12 @@ void gameManager::destroyObjects(Player *CPlayer)
 		}
 	}
 }
+//end funct // destroyObjects()
+//-------------------------------------------------------------------
 
 //-----------------------------------------------------------
 //IMPORTANT MISC FUNCTIONS
+
 //legacy code, probably won't be used
 void gameManager::addProjectile(projectile* shot)
 {
@@ -1734,6 +1784,12 @@ void gameManager::saveObjects(io::IXMLWriter *writer)
 		attributes.push_back(L"id");
 		values.push_back(ship_manager[i]->getID());
 
+		attributes.push_back(L"numFighters");
+		values.push_back(intToString(ship_manager[i]->getNumFighters()));
+
+		attributes.push_back(L"shipCreationTime");
+		values.push_back(intToString(ship_manager[i]->getStarshipCreationTime()));
+
 
 		//write into element shipStats
 		writer->writeElement(intToString(i).c_str(),true,attributes,values);
@@ -1784,9 +1840,9 @@ void gameManager::saveObjects(io::IXMLWriter *writer)
 		attributes.push_back(L"homebase");
 		for(int n=0; n<ship_manager.size(); n++)
 		{
-			if(ship_manager[n]->ship = fighter_manager[i]->getHomeBase())
+			if(ship_manager[n]->ship == fighter_manager[i]->getHomeBase())
 			{
-				attributes.push_back(ship_manager[i]->getID());
+				values.push_back(ship_manager[n]->getID());
 			}
 		}
 		
@@ -1797,11 +1853,26 @@ void gameManager::saveObjects(io::IXMLWriter *writer)
 
 	//save loot
 	core::array<stringw> cvalue;
+	cvalue.push_back(L"num");
+	core::array<stringw> cnum;
+	cnum.push_back(intToString(cargo_manager.size()));
+	writer->writeElement(L"cargoStats",true,cvalue,cnum);
+	for(int i=0; i<cargo_manager.size();i++)
+	{
+		core::array<stringw> attributes;
+		core::array<stringw> values;
 
+		attributes.push_back(L"posX");
+		values.push_back(floatToString(cargo_manager[i]->getPos().X));
+		attributes.push_back(L"posY");
+		values.push_back(floatToString(cargo_manager[i]->getPos().Y));
+		attributes.push_back(L"posZ");
+		values.push_back(floatToString(cargo_manager[i]->getPos().Z));
+	}
 }
 
 //load attributes from xml file
-void gameManager::loadShips(io::IXMLReader *reader, int numobjects)
+void gameManager::loadShips(io::IXMLReader *reader, int numobjects, ShaderCallBack *callback)
 {
 	//for num of ships inside of file
 	for(u32 i = 0;i<numobjects;i++)
@@ -1853,6 +1924,9 @@ void gameManager::loadShips(io::IXMLReader *reader, int numobjects)
 			rot.Y = reader->getAttributeValueAsFloat(L"rotY");
 			rot.Z = reader->getAttributeValueAsFloat(L"rotZ");
 
+			//ship creation time
+			int ship_creation = reader->getAttributeValueAsInt(L"shipCreationTime");
+
 			//load name
 			stringw str(L"");
 			str += reader->getAttributeValue(L"name");
@@ -1881,12 +1955,16 @@ void gameManager::loadShips(io::IXMLReader *reader, int numobjects)
 			//termination character
 			buffer_id[size_id]='\0';
 
-			CShip *newship = new CShip(graphics,sound,pos,rot,sclass,faction,buffer);
+			CShip *newship = new CShip(graphics,sound,pos,rot,sclass,faction,buffer,callback);
+			newship->setStarshipCreationTime(ship_creation);
 			newship->setID(buffer_id);
 
 			newship->setHullPoints(reader->getAttributeValueAsInt(L"hullPoints"));
 			newship->setShieldPoints(reader->getAttributeValueAsInt(L"shieldPoints"));
 			newship->setArmorPoints(reader->getAttributeValueAsInt(L"armorPoints"));
+
+			int fighters = reader->getAttributeValueAsInt(L"numFighters");
+			newship->setNumFighters(fighters);
 			addShip(newship);
 			//newship->setVelocity(reader->getAttributeValueAsFloat(L"velocity"));
 		}
@@ -1986,3 +2064,4 @@ void gameManager::loadFighters(io::IXMLReader *reader, int numobjects)
 		}
 	}
 }
+

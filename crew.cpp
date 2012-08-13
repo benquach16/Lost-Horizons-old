@@ -18,40 +18,20 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#include "stdafx.h"
+#include "crew.h"
 
-#pragma once
 
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
 
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+crew::crew(CREW_TYPE type, bool generate_name)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	health = 100;
+	maxhealth = 100;
+	morale = 70;
+	experience = 0;
 
-private:
-	irr::IrrlichtDevice *graphics;
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
-
-#endif
+crew::~crew()
+{
+}

@@ -18,40 +18,31 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
-
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+#include "stdafx.h"
+#include "warptrail.h"
+//testing for now
+warptrail::warptrail(irr::IrrlichtDevice *graphics, irrklang::ISoundEngine *sound, vector3df &pos, vector3df &rot) : CEffect(graphics,sound,pos)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	this->graphics = graphics;
+	this->sound = sound;
 
-private:
-	irr::IrrlichtDevice *graphics;
+	model = graphics->getSceneManager()->addSphereSceneNode(300,32,0,-1,pos,rot);
+	model->getMesh()->setMaterialFlag(video::EMF_BACK_FACE_CULLING,false);
+	
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
+void warptrail::loop(vector3df &pos)
+{
+	model->setPosition(pos);
+}
 
-#endif
+void warptrail::drop()
+{
+	delete this;
+}
+
+warptrail::~warptrail()
+{
+	model->setVisible(false);
+	model->remove();
+}

@@ -72,10 +72,10 @@ public:
 	void StartGame();
 
 	//if need to generate new config cause of changed settings
-	void createNewVideoConfig(int x,int y, bool windowed, bool vsync);
+	void createNewVideoConfig(int x,int y, bool windowed, bool vsync, bool quality);
 	void readVideoConfig();
 
-	friend class Game;
+	friend class Game;		//legacy
 	float time;
 
 	//used to nuke everything and ensure there are no memory leaks

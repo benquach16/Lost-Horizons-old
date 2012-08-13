@@ -18,40 +18,46 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
 
-#pragma once
-
-#include "irrlicht.h"
+#include "stdafx.h"
 #include "object.h"
-#include "item.h"
 
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+CObject::CObject(const wchar_t *newname)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	object_name = newname;
+	//ghetto id generation
+	//right now it just creates a new num
+	stringw id = L"";
+	const wchar_t *letters[7];
+	letters[0]=L"A";
+	letters[1]=L"B";
+	letters[2]=L"C";
+	letters[3]=L"D";
+	letters[4]=L"E";
+	letters[5]=L"F";
+	letters[6]=L"G";
+	for(int i=0; i<6; i++)
+	{
+		id+=letters[rand()%6];
+	}
+	id+=L"x";
+	id+=rand()%9;
 
-private:
-	irr::IrrlichtDevice *graphics;
+	//have to use a buffer whenever saving aloading cause strings suck
+	int size = id.size();
+	wchar_t *buffer_id;
+	buffer_id = new wchar_t[size+1];
+	//re encode the string onto the new space
+	for(int n=0;n<size;n++)
+	{
+		buffer_id[n]=id[n];
+	}
+	//termination character
+	buffer_id[size]='\0';
+	object_id = buffer_id;
+	//generate unique id
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
-
-#endif
+CObject::~CObject()
+{
+}

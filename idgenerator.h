@@ -18,40 +18,41 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
 
-#pragma once
-
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
+//the idea behind this object is simple
+//generate a random id and save it in a 'pool' to ensure that the id is never reused
+//then the id can be used to identify unique objects
+#ifndef _IDGENERATOR_H_
+#define _IDGENERATOR_H_
 
 #include "vector"
 
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class CIDGenerator
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	CIDGenerator()
+	{
+		//create new id
+		const wchar_t *id = new const wchar_t;
+		
+		//16 bit for speed
+
+	}
+
+	void checkPool()
+	{
+		for(int i=0; i<pool.size(); i++)
+		{
+		}
+	}
+
+	~CIDGenerator()
+	{
+	}
 
 private:
-	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	std::vector<const wchar_t*> pool;
 };
+
 
 #endif

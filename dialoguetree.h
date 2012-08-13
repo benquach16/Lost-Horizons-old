@@ -18,40 +18,42 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#ifndef _DIALOGUETREE_H_
+#define _DIALOGUETREE_H_
 
-#pragma once
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
+#include "dialoguebox.h"
 #include "vector"
 
 using namespace irr;
 using namespace core;
-using namespace video;
+using namespace scene;
+using namespace gui;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class CDialogueTree
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	CDialogueTree(irr::IrrlichtDevice *graphics, const wchar_t *speaker, const wchar_t *text);
+	~CDialogueTree();
+	void loop();
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	bool getFinished()
+	{
+		return finished_dialogue;
+	}
+	void addText(const wchar_t* text)
+	{
+		text_list.push_back(text);
+	}
 
+	
 private:
-	irr::IrrlichtDevice *graphics;
+	CDialogueBox *main;
+	std::vector<const wchar_t*> text_list;
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	bool button_press;
+	bool finished_dialogue;
 };
 
 #endif

@@ -18,40 +18,38 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+//CProgressBar
+//progressbar.h
+//Progress bar class
 
-#pragma once
+#ifndef _PROGRESSBAR_H_
+#define _PROGRESSBAR_H_
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
-
 using namespace irr;
 using namespace core;
+using namespace gui;
 using namespace video;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class CProgressBar
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	CProgressBar(irr::IrrlichtDevice *graphics = (IrrlichtDevice*)0,core::dimension2d<int> pos = core::dimension2d<int>(0,0),core::dimension2d<int> size = core::dimension2d<int>(10,10), int maxvariable=10, gui::IGUIElement *parent =0);
+	~CProgressBar();
+
+	void run(int currentvariable);
+	void changeMax(int newmax);
 
 private:
 	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	int max;
+	core::dimension2d<int> pos;	//THIS IS THE POSITION THAT IS OFFSET FROM THE PARENT
+	core::dimension2d<int> real_pos;	//THIS IS THE ACTUAL POSITION ON THE SCREEN;
+	core::vector2d<s32> parent_pos;
+	core::dimension2d<int> size;
+	gui::IGUIElement *parent;
 };
+
+
 
 #endif

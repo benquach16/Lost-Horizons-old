@@ -31,9 +31,16 @@ cargo::cargo(irr::IrrlichtDevice *graphics, vector3df &pos) : CObject(L"Loot")
 	model = graphics->getSceneManager()->addAnimatedMeshSceneNode(graphics->getSceneManager()->getMesh("res/models/equipment/loot.3DS"));
 	model->setPosition(pos);
 
-	item *i = new item(items().ELECTRONICS);
-	addItemToInventory(i);
-
+	//randomize lewt
+	int l = rand()%items().item_list.size();
+	for(int i=0; i<items().item_list.size(); i++)
+	{
+		if(items().item_list[i]->index == l)
+		{
+			item *in = new item(items().item_list[i]);
+			inventory.push_back(in);
+		}
+	}
 }
 
 void cargo::loop(f32 frameDeltaTime)
@@ -65,6 +72,12 @@ std::vector<item*> cargo::getInventory()
 void cargo::addItemToInventory(item* itemtoadd)
 {
 	inventory.push_back(itemtoadd);
+}
+
+void cargo::setInventory(std::vector<item*> newinventory)
+{
+	inventory.clear();
+	inventory = newinventory;
 }
 
 vector3df cargo::getPos()

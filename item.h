@@ -18,40 +18,29 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
+#ifndef _ITEM_H_
+#define _ITEM_H_
 
 #include "irrlicht.h"
 #include "object.h"
-#include "item.h"
+#include "sTypes.h"
 
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class item : public CObject
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
+	item(item_base *item_type);
+	~item();
+	item_base *getItemType();
 	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
-
+	wchar_t *getItemDescription();
+	int getItemWeight();
+	int getItemCost();
+	int getItemIndex();
 private:
-	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	item_base *item_class;
+	int cost;
+	int weight;
+	bool equipped;
 };
 
 #endif

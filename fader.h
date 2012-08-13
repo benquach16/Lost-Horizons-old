@@ -18,40 +18,57 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
+#ifndef _FADER_H_
+#define _FADER_H_
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
 
-#include "vector"
 
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+class CFader
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	CFader(irr::IrrlichtDevice *graphics)
+	{
+		this->graphics = graphics;
+		time = graphics->getTimer()->getTime(); 
+		transition_alpha = 0;
+		transition_time_start = -1;
+	}
+	~CFader();
+	void update(irr::f32 speed, irr::f32 current_time,bool fadeout)
+	{
 
+		float difference = (current_time - transition_time_start)/1000;
+
+		graphics->getVideoDriver()->draw2DRectangle(irr::video::SColor(transition_alpha,0,0,0),
+			irr::core::rect<irr::s32>(0,0 ,graphics->getVideoDriver()->getScreenSize().Width, graphics->getVideoDriver()->getScreenSize().Height));
+		if(difference >= speed/1000)
+		{
+		
+			if(fadeout==true)
+			{
+				if(transition_alpha<255)
+					transition_alpha++;
+			}
+			else
+			{
+				if(transition_alpha>0)
+					transition_alpha--;
+			}
+			transition_time_start = current_time;
+		}
+
+
+	}
+	void drop()
+	{
+		delete this;
+	}
 private:
 	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	int time;
+	int transition_alpha;
+	int transition_time_start;
 };
 
 #endif

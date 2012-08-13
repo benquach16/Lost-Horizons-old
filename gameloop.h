@@ -58,9 +58,8 @@
 #include "sTypes.h"
 #include "missionlist.h"
 #include "alertbox.h"
-
-#include "missionmanager.h"
 #include "shadercallback.h"
+#include "missionmanager.h"
 
 #include "vector"
 
@@ -82,13 +81,15 @@ public:
 
 	//Construct gameloop object
 	//using video/sound variables given by the starting class
-	GameLoop(irr::IrrlichtDevice *graphics,KeyListener *receiver, irrklang::ISoundEngine *sound, bool loadgame);
+	GameLoop(irr::IrrlichtDevice *graphics,KeyListener *receiver, irrklang::ISoundEngine *sound, bool loadgame, bool quality);
 	~GameLoop();
 	
 	//Used only if running a new game
 	//Mostly temporary until replaced by real scene management system
 	void newGame();
 
+	//Creates an xml save file
+	void saveGame();
 	//Opens up an xml save file and loads all the information from it
 	void loadGame();
 
@@ -182,6 +183,8 @@ private:
 	float camera_sway;						//legacy
 	vector3df camera_old_target;			//legacy
 
+	//planets
+	planet *terran;
 };
 
 

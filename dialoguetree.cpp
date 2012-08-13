@@ -18,40 +18,50 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+#include "stdafx.h"
+#include "dialoguetree.h"
 
-#pragma once
-
-#include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+CDialogueTree::CDialogueTree(irr::IrrlichtDevice *graphics, const wchar_t *speaker, const wchar_t *text) : finished_dialogue(false), button_press(false)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	//create the main dialogue box
+	main = new CDialogueBox(graphics,speaker,text); 
+}
 
-private:
-	irr::IrrlichtDevice *graphics;
+CDialogueTree::~CDialogueTree()
+{
+	main->drop();
+	//just delete
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
+void CDialogueTree::loop()
+{
 
-#endif
+	if(main->getOKButton()->isPressed())
+	{
+		if(button_press==false)
+		{
+			button_press=true;
+			//go on with dialogue tree
+			if(text_list.size()>0)
+			{
+				main->changeText(text_list[0]);
+				text_list.erase(text_list.begin());	
+
+			}
+			else
+			{
+				//finished dialogue
+				finished_dialogue=true;
+			}
+		}
+	}
+	else
+	{
+		button_press=false;
+	}
+}
+
+void CDialogueTree::drop()
+{
+	delete this;
+}

@@ -101,7 +101,7 @@ core::dimension2d<int> screen_size;
 
 
 //constructor to inherit objects from init class
-GameLoop::GameLoop(irr::IrrlichtDevice *graphics, KeyListener *receiver, irrklang::ISoundEngine *sound, bool loadgame):
+GameLoop::GameLoop(irr::IrrlichtDevice *graphics, KeyListener *receiver, irrklang::ISoundEngine *sound, bool loadgame, bool quality):
 graphics(graphics),sound(sound), receiver(receiver), GamePaused(false), pCam(0),then(0),velocity(0)
 {
 	//set up game
@@ -157,10 +157,37 @@ graphics(graphics),sound(sound), receiver(receiver), GamePaused(false), pCam(0),
 	//star class comes with lighting
 	tau_ceti_star = new sun(graphics,core::vector3df(-60000,0,-100000));
 
+
+	//create shader and assign lighting
+	//chcek graphics quality
+	callback = new ShaderCallBack;
+	if(quality==true)
+	{
+		callback->shader_enabled = true;
+		callback->fBumpStrength=4;
+		callback->fSpecularStrength=1;
+		callback->fSpecularPower=20;
+
+		callback->fvAmbient=SColorf(0.5,0.5,0.5);
+	
+		callback->fLightStrength[0]=1;
+		callback->fvLightColor[0]=SColorf(0.6,0.6,0.6);
+		callback->fvLightPosition[0]=graphics->getSceneManager()->getActiveCamera()->getAbsolutePosition();
+
+		//sun
+		callback->fLightStrength[1] = 5000000;
+		callback->fvLightColor[1] = SColorf(0.7,0.7,0.9);
+		callback->fvLightPosition[1] = vector3df(-60000,0,-100000);
+	}
+	else
+	{
+		callback->shader_enabled = false;
+	}
+
 	//create essential objects
 	alertBox	=	new CAlertBox(graphics);
 	Manager		=	new gameManager(graphics,receiver,sound);
-	CPlayer		=	new Player(graphics,sound,alertBox,receiver,core::vector3df(0,0,-3000),ships().TERR_PRAETORIAN_CRUISER);
+	CPlayer		=	new Player(graphics,sound,alertBox,receiver,core::vector3df(0,0,-3000),ships().TERR_PRAETORIAN_CRUISER, callback);
 	CHud		=	new Hud(graphics,CPlayer);
 	gameMenu	=	new CMenu(graphics,sound,receiver, CPlayer);
 	escapeMenu	=	new CEscapeMenu(graphics);
@@ -222,9 +249,11 @@ graphics(graphics),sound(sound), receiver(receiver), GamePaused(false), pCam(0),
 	//AND STARDUST
 	//CAUSE THAT NEEDS TO FOLLOW THE CAMERA NOT THE PLAYER OR ANYTHING ELSE!!!!
 
+
+
 	//TEMPORARY
 	//SETUP SYSTEM
-	planet *terran = new planet(graphics,planets().HABITABLE,core::vector3df(25000,-1000,14000),FACTION_TERRAN_FEDERATION, L"Blacksun Delta","res/textures/planets/habitable_1.jpg");
+	terran = new planet(graphics,planets().HABITABLE,core::vector3df(25000,-1000,14000),FACTION_TERRAN_FEDERATION, L"Blacksun Delta","res/textures/planets/habitable_1.jpg");
 	Manager->addPlanet(terran);
 
 	planet *terran2 = new planet(graphics,planets().BARREN,core::vector3df(-30000,00,300000),FACTION_TERRAN_FEDERATION, L"Argrea","res/textures/planets/barren_1.jpg");
@@ -267,7 +296,7 @@ graphics(graphics),sound(sound), receiver(receiver), GamePaused(false), pCam(0),
 	}
 
 	
-	
+
 }
 
 GameLoop::~GameLoop()
@@ -321,20 +350,20 @@ void GameLoop::newGame()
 
 	
 	const wchar_t *pname = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
-	CShip *prov_cruiser1 = new CShip(graphics,sound, core::vector3df(-5000,50,5000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname);
+	CShip *prov_cruiser1 = new CShip(graphics,sound, core::vector3df(-5000,50,5000),core::vector3df(0,0,0),ships().PROV_ARES_DESTROYER,FACTION_PROVIAN_CONSORTIUM,pname, callback);
 	Manager->addShip(prov_cruiser1);
 
 	const wchar_t *tname = ships().terran_ship_name[rand()%ships().terran_ship_name.size()];
-	CShip *terr_cruiser1 = new CShip(graphics,sound, core::vector3df(-500,0,0),core::vector3df(0,0,0),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION, tname);
+	CShip *terr_cruiser1 = new CShip(graphics,sound, core::vector3df(-500,0,0),core::vector3df(0,0,0),ships().TERR_LEGION_DESTROYER,FACTION_TERRAN_FEDERATION, tname, callback);
 	Manager->addShip(terr_cruiser1);
 
 	const wchar_t *tname2 = ships().terran_ship_name[rand()%ships().terran_ship_name.size()];
-	CShip *terr_cruiser2 = new CShip(graphics,sound, core::vector3df(500,500,-2000),core::vector3df(0,0,0),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION, tname2);
-	Manager->addShip(terr_cruiser2);
+	//CShip *terr_cruiser2 = new CShip(graphics,sound, core::vector3df(500,500,-2000),core::vector3df(0,0,0),ships().TERR_LEGION_DESTROYER,FACTION_TERRAN_FEDERATION, tname2);
+	//Manager->addShip(terr_cruiser2);
 
 	const wchar_t *tname3 = ships().terran_ship_name[rand()%ships().terran_ship_name.size()];
-	CShip *terr_cruiser3 = new CShip(graphics,sound, core::vector3df(1500,500,-1000),core::vector3df(0,0,0),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION, tname3);
-	Manager->addShip(terr_cruiser3);
+	//CShip *terr_cruiser3 = new CShip(graphics,sound, core::vector3df(1500,500,-1000),core::vector3df(0,0,0),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION, tname3);
+	//Manager->addShip(terr_cruiser3);
 	const wchar_t *tname4 = ships().terran_ship_name[rand()%ships().terran_ship_name.size()];
 	//CShip *terr_cruiser4 = new CShip(graphics,sound, core::vector3df(1500,500,-1000),core::vector3df(0,0,0),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION, tname4);
 	//Manager->addShip(terr_cruiser4);
@@ -342,7 +371,7 @@ void GameLoop::newGame()
 	//CShip *terr_cruiser5 = new CShip(graphics,sound, core::vector3df(0,-500,0),core::vector3df(0,0,0),ships().TERR_PRAETORIAN_CRUISER,FACTION_TERRAN_FEDERATION, tname5);
 	//Manager->addShip(terr_cruiser5);
 	
-	CShip *s = new CShip(graphics,sound,core::vector3df(500,-1000,3000),core::vector3df(0,0,0),ships().HQ,FACTION_TERRAN_FEDERATION,L"Terran System Headquarters");
+	CShip *s = new CShip(graphics,sound,core::vector3df(500,-1000,3000),core::vector3df(0,0,0),ships().HQ,FACTION_TERRAN_FEDERATION,L"Terran System Headquarters", callback);
 	if(s)
 	{
 
@@ -351,11 +380,11 @@ void GameLoop::newGame()
 		s->addItemToInventory(in);
 		item* in2 = new item(items().WATER);
 		s->addItemToInventory(in2);
-		item* in3 = new item(turrets().LIGHT_GATLING);
+		item* in3 = new item(items().LIGHT_GATLING);
 		s->addItemToInventory(in3);
-		item* in4 = new item(turrets().PRI_PHOTON);
+		item* in4 = new item(items().PRI_PHOTON);
 		s->addItemToInventory(in4);
-		item* in5 = new item(turrets().SEC_PLASMA);
+		item* in5 = new item(items().SEC_PLASMA);
 		s->addItemToInventory(in5);
 		Manager->addStation(s);
 
@@ -363,7 +392,7 @@ void GameLoop::newGame()
 		//CPlayer->setPos(vector3df(-5000,0,2000));
 		//CPlayer->setMoney(50000);
 	}
-	CShip *trade = new CShip(graphics,sound,vector3df(-3000,0,-13000),vector3df(0,0,0),ships().TRADING_STATION,FACTION_TERRAN_FEDERATION,L"Drall Trading Station");
+	CShip *trade = new CShip(graphics,sound,vector3df(-3000,0,-13000),vector3df(0,0,0),ships().TRADING_STATION,FACTION_TERRAN_FEDERATION,L"Drall Trading Station", callback);
 	if(trade)
 	{
 		item *i = new item(items().HEAVY_METALS);
@@ -373,38 +402,40 @@ void GameLoop::newGame()
 		Manager->addStation(trade);
 	}
 	
-	CShip *argrea_trade = new CShip(graphics,sound,vector3df(-30000,0,275000),vector3df(0,0,0),ships().TRADING_STATION, FACTION_TERRAN_FEDERATION, L"Argrea Trading Station");
+	CShip *argrea_trade = new CShip(graphics,sound,vector3df(-30000,0,275000),vector3df(0,0,0),ships().TRADING_STATION, FACTION_TERRAN_FEDERATION, L"Argrea Trading Station", callback);
 	Manager->addStation(argrea_trade);
 	
-	CShip *shipyard = new CShip(graphics,sound,vector3df(5000,-20,-3000), vector3df(0,0,0), ships().SHIPYARD, FACTION_TERRAN_FEDERATION, L"Blacksun Delta Shipyard");
+	CShip *shipyard = new CShip(graphics,sound,vector3df(5000,-20,-3000), vector3df(0,0,0), ships().SHIPYARD, FACTION_TERRAN_FEDERATION, L"Blacksun Delta Shipyard", callback);
 	if(shipyard)
 	{
-		item *rail = new item(turrets().PRI_RAIL);
+		item *rail = new item(items().PRI_RAIL);
 		shipyard->addItemToInventory(rail);
 	}
 	Manager->addStation(shipyard);
 	
 	
-	CShip *s2 = new CShip(graphics,sound,core::vector3df(-160000,-4000,3000),core::vector3df(0,0,0),ships().HQ,FACTION_PROVIAN_CONSORTIUM,L"Provian Headquarters");
+	CShip *s2 = new CShip(graphics,sound,core::vector3df(-160000,-4000,3000),core::vector3df(0,0,0),ships().HQ,FACTION_PROVIAN_CONSORTIUM,L"Provian Headquarters", callback);
 	Manager->addStation(s2);
 
-	CShip *mine = new CShip(graphics,sound,core::vector3df(-40000,0,0),core::vector3df(0,0,0),ships().MINING_STATION,FACTION_PROVIAN_CONSORTIUM,L"Provian Mining Base");
+	CShip *mine = new CShip(graphics,sound,core::vector3df(-40000,0,0),core::vector3df(0,0,0),ships().MINING_STATION,FACTION_PROVIAN_CONSORTIUM,L"Provian Mining Base", callback);
 	Manager->addStation(mine);
 
 
 	const wchar_t *pname2 = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
-	CShip *prov_cruiser2 = new CShip(graphics,sound, core::vector3df(-40000,0,-2000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname2);
+	CShip *prov_cruiser2 = new CShip(graphics,sound, core::vector3df(-40000,0,-2000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname2, callback);
 	Manager->addShip(prov_cruiser2);
 
 	const wchar_t *pname3 = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
-	CShip *prov_cruiser3 = new CShip(graphics,sound, core::vector3df(-7000,0,8000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname3);
+	CShip *prov_cruiser3 = new CShip(graphics,sound, core::vector3df(-7000,0,8000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname3 ,callback);
 	Manager->addShip(prov_cruiser3);
 	const wchar_t *pname4 = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
-	CShip *prov_cruiser4 = new CShip(graphics,sound, core::vector3df(-8000,1000,7000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname4);
+	CShip *prov_cruiser4 = new CShip(graphics,sound, core::vector3df(-8000,1000,7000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname4, callback);
 	Manager->addShip(prov_cruiser4);
 	const wchar_t *pname5 = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
-	CShip *prov_cruiser5 = new CShip(graphics,sound, core::vector3df(-7000,0,6000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname5);
+	CShip *prov_cruiser5 = new CShip(graphics,sound, core::vector3df(-7000,0,6000),core::vector3df(0,0,0),ships().PROV_ARES_DESTROYER,FACTION_PROVIAN_CONSORTIUM,pname5, callback);
 	Manager->addShip(prov_cruiser5);
+
+
 	const wchar_t *pname6 = ships().provian_ship_name[rand()%ships().provian_ship_name.size()];
 	//CShip *prov_cruiser6 = new CShip(graphics,sound, core::vector3df(-7000,-1000,4000),core::vector3df(0,0,0),ships().PROV_ISHTAR_CRUISER,FACTION_PROVIAN_CONSORTIUM,pname6);
 	//Manager->addShip(prov_cruiser6);
@@ -417,9 +448,39 @@ void GameLoop::newGame()
 	//TODO: SAVE MISSIONS
 	//TODO: READ MISSION TEXT FROM XML
 	//USING STRINGS IN CODE IS NO BUENO
-	missionCreate(graphics,missionM,1);
+	missionM->addMission(missionCreate(graphics,1).tut);
 }
 
+void GameLoop::saveGame()
+{
+
+	io::IXMLWriter *writer;
+	writer = graphics->getFileSystem()->createXMLWriter("saves/save.lsav");
+	writer->writeXMLHeader();
+	writer->writeComment(L"edit this if you're lame or you're me");
+
+	//save ingame timer
+	core::array<stringw> value;
+	value.push_back(L"time");
+	core::array<stringw> num;
+	//save number of missions
+	stringw t(L"");
+	t+=graphics->getTimer()->getTime();
+	num.push_back(t);
+	writer->writeElement(L"gameInfo",true,value,num);
+	//save all scene objects into xml file
+	//donnt save hud and crap cause that changes dynamically
+
+	writer->writeLineBreak();
+	CPlayer->saveObject(writer);
+	writer->writeLineBreak();
+	CPlayer->saveCargo(writer);
+	writer->writeLineBreak();
+	Manager->saveObjects(writer);
+	writer->writeLineBreak();
+	missionM->saveMissions(writer);
+	writer->drop();
+}
 
 //Load game from xml saved file
 //TODO: LOAD MISSIONS
@@ -443,6 +504,11 @@ void GameLoop::loadGame()
 		{
 		case io::EXN_ELEMENT:
 			{
+				//load time info
+				if(core::stringw(L"gameInfo").equals_ignore_case(reader->getNodeName()))
+				{
+					graphics->getTimer()->setTime(reader->getAttributeValueAsInt(0));
+				}
 				//read from playerstats
 				if(core::stringw(L"playerStats").equals_ignore_case(reader->getNodeName()))
 				{
@@ -467,7 +533,7 @@ void GameLoop::loadGame()
 				}
 				else if (currentSection.equals_ignore_case(L"shipStats"))
 				{
-					Manager->loadShips(reader,num_ships);
+					Manager->loadShips(reader,num_ships,callback);
 				}
 				
 				//read from missions element
@@ -545,6 +611,8 @@ void GameLoop::Run()
 		//CAMPAIGN STUFF
 		//PLEASE PUT THIS
 		//INSIDE SPECIFIC CAMPAIGN MANAGER CODEs
+		if(missionM->getMissionList().size()>0)
+		{
 		if(missionM->getMissionList()[0]->getMissionComplete()==true)
 		{
 			if(display_tut==false)
@@ -557,6 +625,7 @@ void GameLoop::Run()
 			dialogueM->addTree(complete);
 			display_tut=true;
 			}
+		}
 		}
 		//
 		 
@@ -572,7 +641,7 @@ void GameLoop::Run()
 
 		//run functions
 		alertBox->run();																	//show alert texts
-		Manager->gameManagerLoop(frameDeltaTime,sound, CPlayer,alertBox);					//update nodes and game scene ai
+		Manager->gameManagerLoop(frameDeltaTime,sound, CPlayer,alertBox,callback);			//update nodes and game scene ai
 		CPlayer->manageTurrets(player_target,frameDeltaTime);								//gives player target to turrets
 		cameraControl(receiver,frameDeltaTime);												//camera movement input
 		dockMenu->menuLoop(CPlayer,docked_station);											//dockmenu loop
@@ -606,23 +675,7 @@ void GameLoop::Run()
 		//save game
 		if(escapeMenu->getSaveButtonPressed())
 		{
-
-			io::IXMLWriter *writer;
-			writer = graphics->getFileSystem()->createXMLWriter("saves/save.lsav");
-			writer->writeXMLHeader();
-			writer->writeComment(L"edit this if you're lame or you're me");
-			//save all scene objects into xml file
-			//donnt save hud and crap cause that changes dynamically
-			
-			writer->writeLineBreak();
-			CPlayer->saveObject(writer);
-			writer->writeLineBreak();
-			CPlayer->saveCargo(writer);
-			writer->writeLineBreak();
-			Manager->saveObjects(writer);
-			writer->writeLineBreak();
-			missionM->saveMissions(writer);
-			writer->drop();
+			saveGame();
 		}
 
 		if(escapeMenu->getQuitButtonPressed())
@@ -969,7 +1022,7 @@ void GameLoop::playerControl(KeyListener *receiver, f32 frameDeltaTime,irrklang:
 				{
 					if(CPlayer->getVelocity() > -10)
 					{
-						velocity-=(5)*frameDeltaTime;
+						velocity-=5*frameDeltaTime;
 						CPlayer->setVelocity(velocity);
 					}
 

@@ -18,40 +18,50 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
 
-#pragma once
+
+#ifndef _COBJECT_H_
+#define _COBJECT_H_
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
 
-#include "vector"
 
 using namespace irr;
 using namespace core;
-using namespace video;
+using namespace scene;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+
+class CObject
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+
+
+	CObject(const wchar_t *newname = L"__TEST_SHIP__");
+
+	~CObject();
+
+	const wchar_t *getName()
+	{
+		return object_name;
+	}
+	void setName(const wchar_t *newname)
+	{
+		object_name = newname;
+	}
+	const wchar_t *getID()
+	{
+		return object_id;
+	}
+	void setID(const wchar_t *newid)
+	{
+		object_id = newid;
+	}
 
 private:
-	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	const wchar_t *object_name;
+	//needed to save and load stuff
+	//legacy////
+	const wchar_t *object_id;
 };
 
 #endif

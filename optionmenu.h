@@ -18,40 +18,57 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
+
+#ifndef _OPTIONMENU_H_
+#define _OPTIONMENU_H_
 
 #pragma once
 
 #include "irrlicht.h"
-#include "object.h"
-#include "item.h"
-
-#include "vector"
+#include "iostream"
+#include "sstream"
 
 using namespace irr;
 using namespace core;
 using namespace video;
+using namespace gui;
 
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+//used in the main menu
+//displays options to change stuffs
+class COptionMenu
 {
 public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	COptionMenu(irr::IrrlichtDevice *graphics);
+	~COptionMenu();
+	void loop();
+	void setVisible(bool isvisible)
+	{
+		visible=isvisible;
+	}
+	bool getVisible()
+	{
+		return visible;
+	}
+	//called by main menu render loop
+	int getResolutionX();
+	int getResolutionY();
+	bool getWindowed();
+	bool getHighQuality();
+	gui::IGUIButton *getApplyButton();
+
 
 private:
+	bool visible;
 	irr::IrrlichtDevice *graphics;
-
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
+	gui::IGUIElement *control;
+	gui::IGUIWindow *window;
+	gui::IGUIComboBox *resolutionX;
+	gui::IGUIComboBox *resolutionY;
+	gui::IGUIComboBox *dynamicLighting;		//to implement
+	gui::IGUICheckBox *windowed;
+	gui::IGUIComboBox *vsync;				//to implement
+	gui::IGUIComboBox *low_fi;
+	gui::IGUIButton *quit;
+	gui::IGUIButton *apply;
 };
-
 #endif

@@ -18,40 +18,47 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _CARGO_H_
-#define _CARGO_H_
-
-#pragma once
-
-#include "irrlicht.h"
-#include "object.h"
+#include "stdafx.h"
 #include "item.h"
 
-#include "vector"
-
-using namespace irr;
-using namespace core;
-using namespace video;
-
-//contains stuff that can be picked up by the player
-class cargo : public CObject
+item::item(item_base *item_type) : CObject(item_type->name), equipped(false)
 {
-public:
-	cargo(irr::IrrlichtDevice *graphics, vector3df &pos);
-	void loop(f32 frameDeltaTime);
-	void drop();
-	std::vector<item*> getInventory();
-	void addItemToInventory(item *itemtoadd);
-	void setInventory(std::vector<item*> newinventory);
-	vector3df getPos();
-	~cargo();
+	this->item_class = item_type;
+	item::setName(item_type->name);
+	this->cost = item_type->cost;
+	this->weight = item_type->weight;
+}
 
-private:
-	irr::IrrlichtDevice *graphics;
+item_base *item::getItemType()
+{
+	return item_class;
+}
 
-	std::vector<item*> inventory;
-	scene::IAnimatedMeshSceneNode *model;
-	vector3df pos;
-};
+wchar_t *item::getItemDescription()
+{
+	return item_class->description;
+}
 
-#endif
+int item::getItemCost()
+{
+	return cost;
+}
+
+int item::getItemWeight()
+{
+	return weight;
+}
+
+void item::drop()
+{
+	delete this;
+}
+
+int item::getItemIndex()
+{
+	return item_class->index;
+}
+
+item::~item()
+{
+}

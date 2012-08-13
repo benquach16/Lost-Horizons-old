@@ -57,6 +57,7 @@ public:
 	core::vector3df getBonePos();
 	core::vector3df getFirePos();
 	scene::IBoneSceneNode *getBone();
+	void setTurret(turret_base *newclass);
 
 	int getTurretNum() const;
 	int getReloadTime();
