@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\levels">
+      <UniqueIdentifier>{d4d5e159-d058-4a64-8724-4e7fab06acf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\levels">
+      <UniqueIdentifier>{981324b0-af8c-48a6-9c36-3c952ba95e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fx">
+      <UniqueIdentifier>{3c02208c-d42e-4abe-9b75-1b9c089dfb3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fx">
+      <UniqueIdentifier>{021aef1a-b423-4c1f-9f95-3b1d58fcfb56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects">
+      <UniqueIdentifier>{6b511ff6-fcdf-4f85-bff9-9ffd9c97d98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects">
+      <UniqueIdentifier>{8fc92c89-5e39-44a5-bbf2-050660412ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\missions">
+      <UniqueIdentifier>{28d8da5c-ea57-4c1a-a6bf-928d2b05d7c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\missions">
+      <UniqueIdentifier>{3d1b5ff9-0a7d-4afc-b938-da9f2f599a82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{93768e3e-cc0e-43bd-afaa-bb7891fa1e3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui">
+      <UniqueIdentifier>{0095b725-fc58-479c-83d7-b16a0396c0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\dialogue">
+      <UniqueIdentifier>{9f7d0615-85fc-452e-9460-3d7fc56468e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dialogue">
+      <UniqueIdentifier>{eb6abe5e-3719-4f7e-a376-16c3b96350b8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="init.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gameloop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keylistener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GFramework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shadercallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="system_tau_ceti.h">
+      <Filter>Header Files\levels</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="impact.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="muzzleflash.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="warptrail.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="dockmenu.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="escapemenu.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="mainmenu.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="optionmenu.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="alertbox.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="cargo.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="fighter.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="item.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ship.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="planet.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="sun.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="turret.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="projectile.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="fader.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="areaofeffect.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="smallexplosion.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="targetmenu.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="progressbar.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="mission.h">
+      <Filter>Header Files\missions</Filter>
+    </ClInclude>
+    <ClInclude Include="missionmanager.h">
+      <Filter>Header Files\missions</Filter>
+    </ClInclude>
+    <ClInclude Include="objective.h">
+      <Filter>Header Files\missions</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="crew.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="hud.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="missionlist.h">
+      <Filter>Header Files\missions</Filter>
+    </ClInclude>
+    <ClInclude Include="dialoguebox.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="dialoguetree.h">
+      <Filter>Header Files\dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="dialoguemanager.h">
+      <Filter>Header Files\dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="campaign.h">
+      <Filter>Header Files\missions</Filter>
+    </ClInclude>
+    <ClInclude Include="motiontrail.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+    <ClInclude Include="idgenerator.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="gamemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="screenquad.h">
+      <Filter>Header Files\fx</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="init.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameloop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="system_tau_ceti.cpp">
+      <Filter>Source Files\levels</Filter>
+    </ClCompile>
+    <ClCompile Include="impact.cpp">
+      <Filter>Source Files\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="explosion.cpp">
+      <Filter>Source Files\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>Source Files\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="muzzleflash.cpp">
+      <Filter>Source Files\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="warptrail.cpp">
+      <Filter>Source Files\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="mainmenu.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="optionmenu.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="dockmenu.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="escapemenu.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="alertbox.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ship.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="cargo.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="fighter.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="planet.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sun.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="turret.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="projectile.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="areaofeffect.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="smallexplosion.cpp">
+      <Filter>Source Files\fx</Filter>
+    </ClCompile>
+    <ClCompile Include="targetmenu.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="progressbar.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="mission.cpp">
+      <Filter>Source Files\missions</Filter>
+    </ClCompile>
+    <ClCompile Include="missonmanager.cpp">
+      <Filter>Source Files\missions</Filter>
+    </ClCompile>
+    <ClCompile Include="objective.cpp">
+      <Filter>Source Files\missions</Filter>
+    </ClCompile>
+    <ClCompile Include="crew.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="hud.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="dialoguebox.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="dialoguetree.cpp">
+      <Filter>Source Files\dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="dialoguemanager.cpp">
+      <Filter>Source Files\dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

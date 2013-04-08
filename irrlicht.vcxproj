@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0DDDAE52-CD1F-4A57-A405-80B677B48C3A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>irrlicht</RootNamespace>
+    <ProjectName>losthorizons</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>C:\irrKlang-1.3.0\lib\Win32-visualStudio;C:\irrlicht-1.7.2\lib\Win32-visualstudio;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\irrKlang-1.3.0\include;C:\irrlicht-1.7.2\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>C:\irrKlang-1.3.0\bin\win32-visualStudio;C:\irrlicht-1.7.2\bin\Win32-VisualStudio;$(ExecutablePath)</ExecutablePath>
+    <ReferencePath>C:\irrKlang-1.3.0\lib\Win32-visualStudio;C:\irrlicht-1.7.2\lib\Win32-visualstudio;$(ReferencePath)</ReferencePath>
+    <SourcePath>C:\irrlicht-1.7.2\source;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>C:\irrKlang-1.3.0\bin;C:\irrlicht-1.7.2\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\irrlicht-1.7.2\include;C:\irrKlang-1.3.0\include;$(IncludePath)</IncludePath>
+    <ReferencePath>C:\irrlicht-1.7.2\lib\Win32-visualstudio;C:\irrKlang-1.3.0\lib\Win32-visualStudio;$(ReferencePath)</ReferencePath>
+    <LibraryPath>C:\irrKlang-1.3.0\lib\Win32-visualStudio;C:\irrlicht-1.7.2\lib\Win32-visualstudio;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="alertbox.h" />
+    <ClInclude Include="areaofeffect.h" />
+    <ClInclude Include="campaign.h" />
+    <ClInclude Include="cargo.h" />
+    <ClInclude Include="crew.h" />
+    <ClInclude Include="dialoguebox.h" />
+    <ClInclude Include="dialoguemanager.h" />
+    <ClInclude Include="dialoguetree.h" />
+    <ClInclude Include="dockmenu.h" />
+    <ClInclude Include="effect.h" />
+    <ClInclude Include="escapemenu.h" />
+    <ClInclude Include="fader.h" />
+    <ClInclude Include="fighter.h" />
+    <ClInclude Include="idgenerator.h" />
+    <ClInclude Include="mainmenu.h" />
+    <ClInclude Include="mission.h" />
+    <ClInclude Include="missionlist.h" />
+    <ClInclude Include="missionmanager.h" />
+    <ClInclude Include="motiontrail.h" />
+    <ClInclude Include="muzzleflash.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="explosion.h" />
+    <ClInclude Include="gameloop.h" />
+    <ClInclude Include="gamemanager.h" />
+    <ClInclude Include="GFramework.h" />
+    <ClInclude Include="hud.h" />
+    <ClInclude Include="impact.h" />
+    <ClInclude Include="init.h" />
+    <ClInclude Include="item.h" />
+    <ClInclude Include="keylistener.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="missile.h" />
+    <ClInclude Include="objective.h" />
+    <ClInclude Include="optionmenu.h" />
+    <ClInclude Include="planet.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="progressbar.h" />
+    <ClInclude Include="projectile.h" />
+    <ClInclude Include="screenquad.h" />
+    <ClInclude Include="shadercallback.h" />
+    <ClInclude Include="ship.h" />
+    <ClInclude Include="smallexplosion.h" />
+    <ClInclude Include="sun.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="sTypes.h" />
+    <ClInclude Include="system_tau_ceti.h" />
+    <ClInclude Include="targetmenu.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="turret.h" />
+    <ClInclude Include="warptrail.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="alertbox.cpp" />
+    <ClCompile Include="areaofeffect.cpp" />
+    <ClCompile Include="cargo.cpp" />
+    <ClCompile Include="crew.cpp" />
+    <ClCompile Include="dialoguebox.cpp" />
+    <ClCompile Include="dialoguemanager.cpp" />
+    <ClCompile Include="dialoguetree.cpp" />
+    <ClCompile Include="dockmenu.cpp" />
+    <ClCompile Include="effect.cpp" />
+    <ClCompile Include="escapemenu.cpp" />
+    <ClCompile Include="explosion.cpp" />
+    <ClCompile Include="fighter.cpp" />
+    <ClCompile Include="gameloop.cpp" />
+    <ClCompile Include="gamemanager.cpp" />
+    <ClCompile Include="hud.cpp" />
+    <ClCompile Include="impact.cpp" />
+    <ClCompile Include="init.cpp" />
+    <ClCompile Include="item.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainmenu.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="missile.cpp" />
+    <ClCompile Include="mission.cpp" />
+    <ClCompile Include="missonmanager.cpp" />
+    <ClCompile Include="muzzleflash.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="objective.cpp" />
+    <ClCompile Include="optionmenu.cpp" />
+    <ClCompile Include="planet.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="progressbar.cpp" />
+    <ClCompile Include="projectile.cpp" />
+    <ClCompile Include="ship.cpp" />
+    <ClCompile Include="smallexplosion.cpp" />
+    <ClCompile Include="sun.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="system_tau_ceti.cpp" />
+    <ClCompile Include="targetmenu.cpp" />
+    <ClCompile Include="turret.cpp" />
+    <ClCompile Include="warptrail.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
